@@ -1,7 +1,6 @@
 FROM httpd:2.4
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get update
-RUN apt-get -y install software-properties-common
 
 RUN echo 'deb http://httpredir.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 
@@ -17,7 +16,7 @@ RUN { \
 		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
 	} > /usr/local/bin/docker-java-home \
 	&& chmod +x /usr/local/bin/docker-java-home
-
+# set default java environment variable
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 ENV JAVA_VERSION 8u72
@@ -38,10 +37,6 @@ RUN set -x \
 # see CA_CERTIFICATES_JAVA_VERSION notes above
 RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
-#RUN add-apt-repository ppa:openjdk-r/ppa
-#RUN apt-get update && apt-get install -y openjdk-8-jdk
-# set default java environment variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64    
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libaprutil1-ldap cron rsyslog \
     && apt-get -y install php5 php5-cli php5-mysqlnd php5-curl php5-ldap php5-mcrypt libapache2-mod-php5 vim && apt-get clean \
@@ -49,9 +44,9 @@ RUN apt-get update \
 # Enable apache mods.
 RUN a2enmod php5
 
-# push bootstrap script at rootfs
+# push your bootstrap script to root dir
 #COPY ./env/bootstrap.sh /
-#give execution rights 
+#give execution rights to it 
 #RUN chmod a+x /bootstrap.sh
 VOLUME /euronews/app/html    
 EXPOSE 80
