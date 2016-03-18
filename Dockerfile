@@ -76,7 +76,6 @@ COPY ./env/php.ini /etc/php5/apache2/php.ini
 # Add the crontab to run crons
 ADD ./env/crontab /etc/cron.d/crontab
 # Give execution rights on the cron job
-#RUN chmod 4755 /etc/cron.d/*
 RUN chmod 0644 /etc/cron.d/crontab
 
 # Create the log file to be able to run tail
